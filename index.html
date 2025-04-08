@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+</head>
+<body>
+    <h1 class="text-4xl font-semibold">Hola desde Tailwindcss</h1>
+    <button class="bg-green-600 px-4 py-2 rounded-md text-white hover:bg-green-800">CLICK</button>
+    
+    <div class="container mx-auto flex justify-center">
+        <div id="tareas" class="w-64 bg-gray-200 p-4 rounded-lg shadow-lg">
+            <h3 class="text-center font-bold text-lg mb-4">ACTIVIDADES</h3>
+            <div class="card bg-white p-3 mb-2 rounded-md shadow" draggable="true" data-id="1">
+                Repasar HTML CSS y Javascript
+            </div>
+            <div class="card bg-white p-3 mb-2 rounded-md shadow" draggable="true" data-id="2">
+                Repasar GIt & GITHUB
+            </div>
+
+            <div class="card bg-white p-3 mb-2 rounded-md shadow" draggable="true" data-id="3">
+                Diseñar una pagina con Bootstrao o Tailwindcss
+            </div>
+        </div>
+
+
+        <div id="en-progreso" class="w-64 bg-gray-200 p-4 rounded-lg shadow-lg mx-4">
+            <h3 class="text-center font-bold text-lg mb-4">EN PROCESO</h3>
+
+        </div>
+
+
+        <div id="terminado" class="w-64 bg-gray-200 p-4 rounded-lg shadow-lg">
+            <h3 class="text-center font-bold text-lg mb-4">FINALIZADO</h3>
+        </div>
+
+    </div>
+
+    <script>
+        const cards = document. querySelectorAll('.card');
+        const lista = document. querySelectorAll('.w-64');
+
+        cards.forEach(function(card) {
+            card.addEventListener('dragstart', (e) => {
+                e.target.classList.add('dragging');
+            });
+
+            card.addEventListener('dragend', (e) => {
+                e.target.classList.remove('dragging');
+            });
+        });
+
+        lista.forEach(list => {
+            list.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const draggingCard = document.querySelector('.dragging');
+                const afterElement = getDragAfterElement(list, e.clientY);
+
+                if(afterElement == null){
+                    list.appendChild(draggingCard);
+                }else{
+                    list.insertBefore(draggingCard, afterElement);
+                }
+            });
+        });
+
+        function getDragAfterElement(list, y) {
+            const draggableElements = [...list.querySelectorAll('.card:not(.dragging)')];
+
+            return draggableElements.reduce((clost, child) => {
+                const caja = child.getBoundingClientRect();
+                const offset = (y - caja.top - caja.height / 2);
+                if(offset<0 && offset> clost.offset){
+                    return {offset, element: child};
+                }else{
+                    return clost;
+                }
+            }, {offset: Number.NEGATIVE_INFINITY}).element;
+
+        }
+
+
+    </script>
+
+</body>
+</html>
